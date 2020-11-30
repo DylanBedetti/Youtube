@@ -12,7 +12,7 @@ class App extends React.Component {
   state = { videos: [], selectedVideo: null };
 
   componentDidMount() {
-    this.onTermSubmit("cows");
+    this.onTermSubmit("sheep");
   }
 
   onTermSubmit = async (query) => {
