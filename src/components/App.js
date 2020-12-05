@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
 import youtube from "../apis/youtube";
 import VideoList from "./VideoList";
@@ -8,57 +8,48 @@ import { Layout } from "antd";
 
 const { Header, Sider, Content } = Layout;
 
-class App extends React.Component {
-  state = { videos: [], selectedVideo: null };
+const App = () => {
+  const [videos, setVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
 
-  componentDidMount() {
-    this.onTermSubmit("sheep");
-  }
+  useEffect(() => {
+    onTermSubmit("sheep");
+  }, []);
 
-  onTermSubmit = async (query) => {
+  const onTermSubmit = async (query) => {
     const response = await youtube.get("/search", {
       params: { q: query },
     });
-    this.setState({
-      videos: response.data.items,
-      selectedVideo: response.data.items[0],
-    });
+
+    setVideos(response.data.items);
+    setSelectedVideo(response.data.items[0]);
   };
 
-  onVideoSelect = (video) => {
-    this.setState({ selectedVideo: video });
-  };
-
-  render() {
-    return (
-      <Layout style={{ background: "white", height: "100vh" }}>
-        <Header theme="light" style={{ background: "inherit" }}>
-          <div
-            style={{
-              justifyContent: "center",
-              display: "flex",
-            }}
-          >
-            <SearchBar onTermSubmit={this.onTermSubmit} />
-          </div>
-        </Header>
-        <Layout style={{ background: "inherit" }}>
-          <Content>
-            <VideoDetail video={this.state.selectedVideo} />
-          </Content>
-          <Sider style={{ background: "inherit" }} width="400">
-            <VideoList
-              videos={this.state.videos}
-              onVideoSelect={this.onVideoSelect}
-            />
-          </Sider>
-        </Layout>
-        {/* <Footer style={{ background: "red", position: "sticky", bottom: "0" }}>
-          Footer
-        </Footer> */}
+  return (
+    <Layout style={{ background: "white", height: "100vh" }}>
+      <Header theme="light" style={{ background: "inherit" }}>
+        <div
+          style={{
+            justifyContent: "center",
+            display: "flex",
+          }}
+        >
+          <SearchBar onTermSubmit={onTermSubmit} />
+        </div>
+      </Header>
+      <Layout style={{ background: "inherit" }}>
+        <Content>
+          <VideoDetail video={selectedVideo} />
+        </Content>
+        <Sider style={{ background: "inherit" }} width="400">
+          <VideoList
+            videos={videos}
+            onVideoSelect={setSelectedVideo} // same as (video) => setSelectedVideo(video)
+          />
+        </Sider>
       </Layout>
-    );
-  }
-}
+    </Layout>
+  );
+};
 
 export default App;
