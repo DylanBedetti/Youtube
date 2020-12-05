@@ -1,29 +1,20 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "./SearchBar";
-import youtube from "../apis/youtube";
 import VideoList from "./VideoList";
 import VideoDetail from "./VideoDetail";
+import useVideos from "../hooks/useVideos";
 
 import { Layout } from "antd";
 
 const { Header, Sider, Content } = Layout;
 
 const App = () => {
-  const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videos, search] = useVideos("sheep");
 
   useEffect(() => {
-    onTermSubmit("sheep");
-  }, []);
-
-  const onTermSubmit = async (query) => {
-    const response = await youtube.get("/search", {
-      params: { q: query },
-    });
-
-    setVideos(response.data.items);
-    setSelectedVideo(response.data.items[0]);
-  };
+    setSelectedVideo(videos[0]);
+  }, [videos]);
 
   return (
     <Layout style={{ background: "white", height: "100vh" }}>
@@ -34,7 +25,7 @@ const App = () => {
             display: "flex",
           }}
         >
-          <SearchBar onTermSubmit={onTermSubmit} />
+          <SearchBar onTermSubmit={search} />
         </div>
       </Header>
       <Layout style={{ background: "inherit" }}>
