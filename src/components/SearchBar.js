@@ -8,7 +8,7 @@ const SearchBar = ({ onTermSubmit }) => {
 
   return (
     <Search
-      placeholder="Search..."
+      placeholder="Search For a Video"
       onSearch={() => onTermSubmit(term)}
       onChange={(e) => setTerm(e.target.value)}
       style={{
